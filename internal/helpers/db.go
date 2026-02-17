@@ -9,6 +9,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
+const DB_CONNECTIONS_ATTEMPTS = 5
+
 type DBConfig struct {
 	Host     string
 	Port     string
@@ -25,14 +27,15 @@ func OpenDB(cfg DBConfig, logger *slog.Logger) (*sql.DB, error) {
 
 	var db *sql.DB
 	var err error
-	for i := 0; i < 5; i++ {
+
+	for i := range DB_CONNECTIONS_ATTEMPTS {
 		db, err = sql.Open("postgres", dsn)
 		if err == nil {
 			if err = db.Ping(); err == nil {
 				break
 			}
 		}
-		logger.Info("waiting for database", "attempt", i+1, "of", 5)
+		logger.Info("waiting for database", "attempt", i+1, "of", DB_CONNECTIONS_ATTEMPTS)
 		time.Sleep(2 * time.Second)
 	}
 	if err != nil {
