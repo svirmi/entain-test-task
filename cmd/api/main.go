@@ -1,21 +1,26 @@
+// file cmd/api/main.go
+
 package main
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+	app, err := newApplication()
 
-	app := newApplication()
+	if err != nil {
+		os.Stderr.WriteString("startup error: " + err.Error() + "\n")
+		os.Exit(1)
+	}
 
 	port := app.config.port
 	server := &http.Server{
@@ -26,21 +31,29 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+
 	serverErrors := make(chan error, 1)
 
 	go func() {
-		log.Printf("Server listening on :%s (ReadTimeout=%s WriteTimeout=%s IdleTimeout=%s)",
-			port, server.ReadTimeout, server.WriteTimeout, server.IdleTimeout)
+		app.logger.Info("server started",
+			"addr", server.Addr,
+			"env", app.config.env,
+			"readTimeout", server.ReadTimeout,
+			"writeTimeout", server.WriteTimeout,
+		)
 		serverErrors <- server.ListenAndServe()
 	}()
 
 	select {
 	case err := <-serverErrors:
 		if !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("Server error: %v", err)
+			app.logger.Error("server error", "error", err)
+			os.Exit(1)
 		}
 
 	case sig := <-quit:
-		log.Printf("\n[shutdown] signal received: %v — beginning graceful shutdown", sig)
+		app.logger.Info("shutdown signal received", "signal", sig.String())
 	}
 }

@@ -1,3 +1,5 @@
+// file cmd/api/app.go
+
 package main
 
 import (
@@ -27,7 +29,10 @@ type application struct {
 	db     *sql.DB
 }
 
-func newApplication() *application {
+func newApplication() (*application, error) {
+
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
 	cfg := config{}
 
 	cfg.port = helpers.GetEnvAsStr("PORT", "8000")
@@ -39,10 +44,21 @@ func newApplication() *application {
 	cfg.db.password = helpers.GetEnvAsStr("DB_PASSWORD", "postgres")
 	cfg.db.name = helpers.GetEnvAsStr("DB_NAME", "transactions")
 
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	db, err := helpers.OpenDB(helpers.DBConfig{
+		Host:     cfg.db.host,
+		Port:     cfg.db.port,
+		User:     cfg.db.user,
+		Password: cfg.db.password,
+		Name:     cfg.db.name,
+	}, logger)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return &application{
 		config: cfg,
 		logger: logger,
-	}
+		db:     db,
+	}, nil
 }
