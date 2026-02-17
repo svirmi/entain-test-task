@@ -30,7 +30,7 @@ type application struct {
 func newApplication() *application {
 	cfg := config{}
 
-	cfg.port = helpers.GetEnvAsStr("PORT", "8080")
+	cfg.port = helpers.GetEnvAsStr("PORT", "8000")
 	cfg.env = helpers.GetEnvAsStr("ENV", "development")
 	cfg.shutdownTimeout = helpers.GetEnvAsStr("SHUTDOWN_TIMEOUT", "30s")
 	cfg.db.host = helpers.GetEnvAsStr("DB_HOST", "postgres")

@@ -17,7 +17,7 @@ func main() {
 
 	app := newApplication()
 
-	port := "8080"
+	port := app.config.port
 	server := &http.Server{
 		Addr:         ":" + port,
 		Handler:      app.routes(),
