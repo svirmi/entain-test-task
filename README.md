@@ -23,6 +23,11 @@ curl -X POST http://localhost:8080/user/1/transaction \
   }'
 ```
 
+"Health" endpoint exposed too:
+```
+```curl -s "http://localhost:8080/health"```
+```
+
 ### How to automatically test
 Application has test suit to test and check most obvious corner-cases
 Run ```bash test.sh``` from the project root folder (application should be running)
