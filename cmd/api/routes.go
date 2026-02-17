@@ -5,5 +5,7 @@ import "net/http"
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
+	mux.HandleFunc("GET /health", app.healthCheck)
+
 	return mux
 }
