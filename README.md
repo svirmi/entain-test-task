@@ -27,6 +27,11 @@ curl -X POST http://localhost:8080/user/1/transaction \
 Application has test suit to test and check most obvious corner-cases
 Run ```bash test.sh``` from the project root folder (application should be running)
 
+<p align="center" width="100%">
+<video src="https://github.com/user-attachments/assets/9113e2f9-b930-4b77-b382-d09cca895d96" width="92%" controls></video>
+</p>
+
+
 #### Transaction Service Test Suite
 1. Health check
 2. All 3 predefined users exist (spec: userId 1, 2, 3)
