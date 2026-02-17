@@ -3,6 +3,8 @@ package helpers
 import (
 	"encoding/json"
 	"net/http"
+	"os"
+	"time"
 )
 
 func ValidSourceTypes() map[string]bool {
@@ -19,4 +21,20 @@ func WriteJSON(w http.ResponseWriter, status int, data any) {
 
 func WriteError(w http.ResponseWriter, status int, message string) {
 	WriteJSON(w, status, map[string]string{"error": message})
+}
+
+func GetEnvAsStr(key, defaultValue string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return defaultValue
+}
+
+func GetEnvAsDuration(key string, defaultValue time.Duration) time.Duration {
+	if v := os.Getenv(key); v != "" {
+		if d, err := time.ParseDuration(v); err == nil {
+			return d
+		}
+	}
+	return defaultValue
 }
