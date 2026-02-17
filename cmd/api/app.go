@@ -56,6 +56,7 @@ func newApplication() (*application, error) {
 		User:     cfg.db.user,
 		Password: cfg.db.password,
 		Name:     cfg.db.name,
+		Env:      cfg.env,
 	}, logger)
 
 	if err != nil {

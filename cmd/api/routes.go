@@ -7,7 +7,7 @@ func (app *application) routes() http.Handler {
 
 	mux.HandleFunc("GET /health", app.healthCheck)
 	mux.HandleFunc("POST /user/{userId}/transaction", app.createTransaction)
-	mux.HandleFunc("GET  /user/{userId}/balance", app.getUserBalance)
+	mux.HandleFunc("GET /user/{userId}/balance", app.getUserBalance)
 
-	return mux
+	return app.logRequest(mux)
 }

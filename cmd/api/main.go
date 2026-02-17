@@ -69,7 +69,7 @@ func main() {
 		}
 		app.logger.Info("shutdown step 1/3: HTTP listener stopped")
 
-		// Step 2 — drain in-flight handlers.
+		// Step 2 — drain in-flight handlers
 		app.logger.Info("shutdown step 2/3: draining in-flight requests")
 		waitDone := make(chan struct{})
 		go func() { app.wg.Wait(); close(waitDone) }()
@@ -81,7 +81,7 @@ func main() {
 			app.logger.Warn("shutdown step 2/3: timeout reached, some requests interrupted")
 		}
 
-		// Step 3 — close DB pool only after all handlers have returned.
+		// Step 3 — close DB pool
 		app.logger.Info("shutdown step 3/3: closing database pool")
 		if err := app.db.Close(); err != nil {
 			app.logger.Error("db.Close error", "error", err)

@@ -31,6 +31,7 @@ services:
       DB_NAME: transactions
       PORT: 8080
       SHUTDOWN_TIMEOUT: 30s
+      ENV: test
     depends_on:
       postgres:
         condition: service_healthy
