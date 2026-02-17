@@ -9,6 +9,8 @@ import (
 	"sync"
 
 	"github.com/svirmi/entain-test-task/internal/helpers"
+	"github.com/svirmi/entain-test-task/internal/repository"
+	"github.com/svirmi/entain-test-task/internal/service"
 )
 
 type config struct {
@@ -25,10 +27,12 @@ type config struct {
 }
 
 type application struct {
-	config config
-	logger *slog.Logger
-	db     *sql.DB
-	wg     sync.WaitGroup // tracks in-flight requests for graceful shutdown
+	config      config
+	logger      *slog.Logger
+	db          *sql.DB
+	userService *service.UserService
+	txService   *service.TransactionService
+	wg          sync.WaitGroup // tracks in-flight requests for graceful shutdown
 }
 
 func newApplication() (*application, error) {
@@ -52,15 +56,21 @@ func newApplication() (*application, error) {
 		User:     cfg.db.user,
 		Password: cfg.db.password,
 		Name:     cfg.db.name,
+		Env:      cfg.env,
 	}, logger)
 
 	if err != nil {
 		return nil, err
 	}
 
+	userRepo := repository.NewUserRepository(db)
+	txRepo := repository.NewTransactionRepository(db)
+
 	return &application{
-		config: cfg,
-		logger: logger,
-		db:     db,
+		config:      cfg,
+		logger:      logger,
+		db:          db,
+		userService: service.NewUserService(userRepo),
+		txService:   service.NewTransactionService(txRepo),
 	}, nil
 }
