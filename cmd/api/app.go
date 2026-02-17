@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"log/slog"
 	"os"
+	"sync"
 
 	"github.com/svirmi/entain-test-task/internal/helpers"
 )
@@ -27,6 +28,7 @@ type application struct {
 	config config
 	logger *slog.Logger
 	db     *sql.DB
+	wg     sync.WaitGroup // tracks in-flight requests for graceful shutdown
 }
 
 func newApplication() (*application, error) {

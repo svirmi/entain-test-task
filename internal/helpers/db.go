@@ -1,5 +1,3 @@
-// file internal/helpers/db.go
-
 package helpers
 
 import (
@@ -7,6 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 type DBConfig struct {
