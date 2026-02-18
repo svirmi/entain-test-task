@@ -26,7 +26,7 @@ func (r *UserRepository) GetBalance(userID uint64) (string, error) {
 		return "", fmt.Errorf("failed to get balance: %w", err)
 	}
 
-	// Re-parse through big.Rat to normalise to exactly 2 decimal places.
+	// Normalise to exactly 2 decimal places.
 	formatted, err := helpers.ParseAndFormat(raw)
 	if err != nil {
 		return "", fmt.Errorf("failed to format balance: %w", err)

@@ -1,5 +1,3 @@
-// file cmd/api/app.go
-
 package main
 
 import (

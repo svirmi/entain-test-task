@@ -21,8 +21,7 @@ type DBConfig struct {
 }
 
 // OpenDB opens the database connection and handles migrations.
-// If the environment variable "DB_RESET" is set to "true", it will run
-// MigrateDown followed by MigrateUp.
+// If the environment variable "ENV" is set to "test", it will run MigrateDown followed by MigrateUp.
 func OpenDB(cfg DBConfig, logger *slog.Logger) (*sql.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
