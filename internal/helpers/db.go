@@ -20,20 +20,19 @@ type DBConfig struct {
 	Env      string
 }
 
-// OpenDB opens the database connection and handles migrations.
+// OpenDB opens the database connection and handles DB initialisation
 // If the environment variable "ENV" is set to "test", it will run MigrateDown followed by MigrateUp.
+// Reset DB for "test" environment
 func OpenDB(cfg DBConfig, logger *slog.Logger) (*sql.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.Name,
 	)
 
-	fmt.Println(dsn)
-
 	var db *sql.DB
 	var err error
 
-	for i := 0; i < DB_CONNECTIONS_ATTEMPTS; i++ {
+	for i := range DB_CONNECTIONS_ATTEMPTS {
 		db, err = sql.Open("postgres", dsn)
 		if err == nil {
 			if err = db.Ping(); err == nil {
@@ -53,7 +52,7 @@ func OpenDB(cfg DBConfig, logger *slog.Logger) (*sql.DB, error) {
 	db.SetConnMaxLifetime(5 * time.Minute)
 	logger.Info("database connection established")
 
-	// Check if we should reset the DB (test env only)
+	// Check if we should reset the DB ('test' env only)
 	if cfg.Env == "test" {
 		if err := MigrateDown(db, logger); err != nil {
 			return nil, err
@@ -68,7 +67,7 @@ func OpenDB(cfg DBConfig, logger *slog.Logger) (*sql.DB, error) {
 	return db, nil
 }
 
-// MigrateUp creates tables, indexes, and seeds data.
+// MigrateUp creates tables, indexes, and seeds initial users
 func MigrateUp(db *sql.DB, logger *slog.Logger) error {
 	stmts := []string{
 		// 1. Create Users Table
