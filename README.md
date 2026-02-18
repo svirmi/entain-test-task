@@ -44,7 +44,7 @@ Run ```bash test.sh``` from the project root folder (application should be runni
 4. WIN — balance increases by exact amount
 5. LOSE — balance decreases by exact amount
 6. Transactions with the same transactionId is ignored 
-7. Negative balance prevention
+7. Negative balance protection
 8. userId=0 rejected (must be positive uint64)
 9. Unknown userId → error on both routes (GET, POST)
 10. Missing Source-Type header → 400
