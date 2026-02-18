@@ -17,7 +17,7 @@ func ValidSourceTypes() map[string]bool {
 	return validSourceTypes
 }
 
-// parseUserID extracts and validates the {userId} path parameter.
+// extracts and validates the {userId} path parameter.
 func ParseUserID(r *http.Request) (uint64, error) {
 	raw := r.PathValue("userId")
 	id, err := strconv.ParseUint(raw, 10, 64)
